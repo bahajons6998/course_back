@@ -1,0 +1,122 @@
+// backend/src/models/schema.prisma
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id       Int        @id @default(autoincrement())
+  email    String     @unique
+  password String
+  name     String?
+  avatar   String?
+  role     Role       @default(user)
+  Template Template[]
+}
+
+enum Role {
+  admin
+  user
+}
+
+model Template {
+  id                 Int                  @id @default(autoincrement())
+  title              String
+  description        String?
+  likes              Int                  @default(0)
+  isPublic           Boolean              @default(true)
+  createdAt          DateTime             @default(now())
+  comments           Comments?            @relation(fields: [commentsId], references: [id], onDelete: Cascade)
+  tags               Tags?                @relation(fields: [tagsId], references: [id], onDelete: Cascade)
+  SingleValueInput   SingleValueInput[]
+  MultipleValueInput MultipleValueInput[]
+  User               User?                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             Int?
+  commentsId         Int?
+  tagsId             Int?
+}
+
+model Tags {
+  id       Int        @id @default(autoincrement())
+  tag      String?
+  Template Template[]
+}
+
+model Comments {
+  id          Int        @id @default(autoincrement())
+  comment     String?
+  template_id Int?
+  Template    Template[]
+}
+
+model SingleValueInput {
+  id          Int        @id @default(autoincrement())
+  group_id    Int?
+  template    Template?  @relation(fields: [template_id], references: [id], onDelete: Cascade)
+  template_id Int?
+  name        String?
+  description String?
+  type        TypeSingle
+  order       Int?
+  required    Boolean    @default(false)
+}
+
+enum TypeSingle {
+  time
+  text
+  textarea
+  boolean
+  file
+  date
+}
+
+model MultipleValueInput {
+  id          Int          @id @default(autoincrement())
+  group_id    Int?
+  template    Template?    @relation(fields: [template_id], references: [id], onDelete: Cascade)
+  template_id Int?
+  name        String?
+  description String?
+  type        TypeMultiple
+  required    Boolean      @default(false)
+  Option      Option[]
+  order       Int?
+  up          String?
+  down        String?
+}
+
+enum TypeMultiple {
+  checkbox
+  radio
+  level
+}
+
+model Option {
+  id          Int                 @id @default(autoincrement())
+  multiple    MultipleValueInput? @relation(fields: [multiple_id], references: [id], onDelete: Cascade)
+  multiple_id Int?
+  value       String?
+}
+
+model Victorina {
+  id        Int      @id @default(autoincrement())
+  title     String
+  inputs    Json     
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  answers   Answer[] 
+}
+
+model Answer {
+  id           Int      @id @default(autoincrement())
+  victorinaId  Int
+  questionName String   
+  answer       Json     
+  type         String   
+  createdAt    DateTime @default(now())
+  victorina    Victorina @relation(fields: [victorinaId], references: [id])
+}
