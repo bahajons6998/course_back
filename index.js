@@ -10,7 +10,7 @@ const uploadRouter = require("./routes/file.route");
 
 app.use(
   cors({
-    origin: ['http://157.230.26.234:3000', 'http://localhost:3000'], // Frontend URL (React ilovangiz manzili)
+    origin: ['http://157.230.26.234:3000', 'http://localhost:3000','http://167.71.223.168:3000'], // Frontend URL (React ilovangiz manzili)
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
