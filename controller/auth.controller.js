@@ -11,8 +11,6 @@ const register = async (req, res) => {
     if (!email || !password || !name) {
       return res.status(400).json({ message: 'All fields are required' });
     }
-    const usercheck= await prisma.user.findFirst({where:{email}})
-    if(usercheck) return res.status(400).json({ error: 'Email already exist' });
     const user = await prisma.user.create({
       data: {
         email,
@@ -22,8 +20,11 @@ const register = async (req, res) => {
     });
     res.status(201).json(user);
   } catch (error) {
+    if (error.code === 'P2002') {
+      return res.status(500).json({ error: 'Email already exists' });
+    }
     console.log(error)
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
