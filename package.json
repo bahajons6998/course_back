@@ -1,4 +1,10 @@
 {
+  "name": "course_back",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "@prisma/client": "^6.10.1",
     "bcryptjs": "^3.0.2",
