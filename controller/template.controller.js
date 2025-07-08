@@ -75,13 +75,13 @@ const getTemplates = async (req, res) => {
 			},
 		});
 		const formattedTemplates = formatAllTemplate(templates)
-		console.log('formattedTemplates=', formattedTemplates);
+		// console.log('formattedTemplates=', formattedTemplates);
 		if (!formattedTemplates.length) {
 			return res.status(200).json({ templates: [], message: 'Hech qanday shablon topilmadi' });
 		}
 		res.status(200).json({ formattedTemplates });
 	} catch (error) {
-		console.error(error);
+		// console.error(error);
 		res.status(500).json({ message: "Error fetching templates" });
 	}
 };
@@ -226,12 +226,11 @@ const updateTemplate = async (req, res) => {
 	}
 };
 
-// 5. DELETE: Shablonni o'chirish
+
 const deleteTemplate = async (req, res) => {
 	try {
 		const { id } = req.params
 		console.log(id);
-		// Avval bog'langan ma'lumotlarni o'chirish (agar kerak bo'lsa
 		await prisma.template.delete({
 			where: { id: parseInt(id) }
 		})

@@ -21,7 +21,7 @@ const register = async (req, res) => {
     res.status(201).json(user);
   } catch (error) {
     if (error.code === 'P2002') {
-      return res.status(500).json({ error: 'Email already exists' });
+      return res.status(400).json({ error: 'Email already exists' });
     }
     console.log(error)
     res.status(500).json({ error: error.message });
@@ -33,17 +33,17 @@ const login = async (req, res) => {
   console.log(email, password);
   try {
     const user = await prisma.user.findFirst({ where: { email } });
-    if (!user) return res.json({ error: 'Email incorrect' });
+    if (!user) return res.status(400).json({ error: 'Email incorrect' });
 
     const match = await comparePassword(password, user.password);
-    if (!match) return res.json({ error: 'Password incorrect' });
+    if (!match) return res.status(400).json({ error: 'Password incorrect' });
 
     const token = generateToken(user);
 
     res.json({ message: 'Loged in successfully', user, token });
   } catch (err) {
     console.log(err)
-    res.status(500).json({ error: 'Login error' });
+    res.status(401).json({ error: 'Login error' });
   }
 };
 

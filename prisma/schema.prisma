@@ -9,13 +9,14 @@ generator client {
 }
 
 model User {
-  id       Int        @id @default(autoincrement())
-  email    String     @unique
-  password String
-  name     String?
-  avatar   String?
-  role     Role       @default(user)
-  Template Template[]
+  id        Int         @id @default(autoincrement())
+  email     String      @unique
+  password  String
+  name      String?
+  avatar    String?
+  role      Role        @default(user)
+  Template  Template[]
+  Victorina Victorina[]
 }
 
 enum Role {
@@ -38,6 +39,7 @@ model Template {
   userId             Int?
   commentsId         Int?
   tagsId             Int?
+  Victorina          Victorina[]
 }
 
 model Tags {
@@ -103,20 +105,21 @@ model Option {
 }
 
 model Victorina {
-  id        Int      @id @default(autoincrement())
-  title     String
-  inputs    Json     
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  answers   Answer[] 
+  id             Int      @id @default(autoincrement())
+  title          String
+  templateId     Int
+  Template       Template @relation(fields: [templateId], references: [id], onDelete: Restrict)
+  answeredUserId Int?
+  User           User?    @relation(fields: [answeredUserId], references: [id])
+  createdAt      DateTime @default(now())
+  answer         Answer[]
 }
 
 model Answer {
-  id           Int      @id @default(autoincrement())
-  victorinaId  Int
-  questionName String   
-  answer       Json     
-  type         String   
-  createdAt    DateTime @default(now())
-  victorina    Victorina @relation(fields: [victorinaId], references: [id])
+  id          Int       @id @default(autoincrement())
+  victorinaId Int
+  question    String
+  answer      Json
+  createdAt   DateTime  @default(now())
+  victorina   Victorina @relation(fields: [victorinaId], references: [id])
 }
